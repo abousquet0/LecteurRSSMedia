@@ -6,13 +6,47 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MainActivity">
+
     <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hello World!"
+            android:layout_width="211dp"
+            android:layout_height="22dp"
+            android:text="@string/mainpage_title"
+            android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_bias="0.039"
+            android:id="@+id/textView"/>
+
+
+    <ListView
+            android:id="@+id/urlList"
+            android:layout_width="413dp"
+            android:layout_height="450dp"
+            app:layout_constraintTop_toBottomOf="@+id/textView" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="84dp"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintVertical_bias="0.078"/>
+    <Button
+            android:text="@string/add_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@+id/textView" android:layout_marginBottom="24dp"
+            app:layout_constraintBottom_toTopOf="@+id/urlList" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintHorizontal_bias="0.848"
+            app:layout_constraintVertical_bias="0.0"
+            android:id="@+id/addBtn"/>
+    <EditText
+            android:hint="URL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/addUrl"
+            app:layout_constraintEnd_toStartOf="@+id/addBtn" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="15dp" app:layout_constraintTop_toBottomOf="@+id/textView"
+            android:layout_marginBottom="24dp" app:layout_constraintBottom_toTopOf="@+id/urlList"
+            android:layout_marginLeft="28dp" android:layout_marginStart="28dp"
+            app:layout_constraintVertical_bias="0.0" app:layout_constraintHorizontal_bias="0.272"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

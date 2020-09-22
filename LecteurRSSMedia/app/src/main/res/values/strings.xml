@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">LecteurRSSMedia</string>
+    <string name="mainpage_title">Liste des flux RSS </string>
+    <string name="add_btn">Ajouter</string>
 </resources>
