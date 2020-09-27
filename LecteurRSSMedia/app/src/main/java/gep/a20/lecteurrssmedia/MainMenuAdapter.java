@@ -97,8 +97,7 @@ public class MainMenuAdapter extends ArrayAdapter<RssFeed> {
         deleteBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //do something
-                rssFeedList.remove(position); //or some other task
+                rssFeedList.remove(position);
                 notifyDataSetChanged();
             }
         });

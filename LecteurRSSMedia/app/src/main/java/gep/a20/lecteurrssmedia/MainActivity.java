@@ -29,6 +29,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     ListView listViewMain;
+    EditText addUrlEditText;
     private MainMenuAdapter mainMenuAdapter;
     String[] sites = { "https://ici.radio-canada.ca/rss/4159",
             "https://ici.radio-canada.ca/rss/1000524",
@@ -41,9 +42,9 @@ public class MainActivity extends AppCompatActivity {
             "https://feeds.twit.tv/sn_video_hd.xml"};
 
 
-    ArrayList<String> titles;
-    ArrayList<Integer> itemCounts;
-    ArrayList<Drawable> images;
+//    ArrayList<String> titles;
+//    ArrayList<Integer> itemCounts;
+//    ArrayList<Drawable> images;
 
 
     @Override
@@ -51,14 +52,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         listViewMain = (ListView) findViewById(R.id.list_view);
+        addUrlEditText = (EditText) findViewById(R.id.addUrl);
 
         // TEST
         mainMenuAdapter = new MainMenuAdapter(getApplicationContext(), R.layout.listview_item);
         listViewMain.setAdapter(mainMenuAdapter);
 
-        titles = new ArrayList<>();
-        itemCounts = new ArrayList<>();
-        images = new ArrayList<Drawable>();
+//        titles = new ArrayList<>();
+//        itemCounts = new ArrayList<>();
+//        images = new ArrayList<Drawable>();
 
 
         listViewMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -68,7 +70,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        new ProcessInBackground().execute();
+        Button addUrlButton = (Button) findViewById(R.id.addBtn);
+        addUrlButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                try {
+                    // À faire ici pour ajouter de nouveaux URL.
+                    URL url = new URL(addUrlEditText.getText().toString());
+                    new ProcessInBackground(true).execute();
+                } catch (Exception ex) {
+                    String error = ex.getMessage();
+                }
+            }
+        });
+
+        new ProcessInBackground(false).execute();
     }
 
     public InputStream getInputStream(URL url) {
@@ -84,6 +100,23 @@ public class MainActivity extends AppCompatActivity {
     {
         ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
         Exception exception = null;
+        boolean isAddingUrl = false;
+        String[] sitesToAdd = sites;
+
+        ArrayList<String> titles;
+        ArrayList<Integer> itemCounts;
+        ArrayList<Drawable> images;
+
+        public ProcessInBackground(boolean AddingUrl) {
+        titles = new ArrayList<>();
+        itemCounts = new ArrayList<>();
+        images = new ArrayList<Drawable>();
+
+            isAddingUrl = AddingUrl;
+            if (isAddingUrl) {
+                sitesToAdd = new String[] { addUrlEditText.getText().toString() };
+            }
+        }
 
         @Override
         protected void onPreExecute() {
@@ -95,8 +128,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Exception doInBackground(Integer... params) {
             try {
-                for (int i = 0; i < sites.length; i ++) {
-                    URL url = new URL(sites[i]);
+                for (int i = 0; i < sitesToAdd.length; i ++) {
+                    URL url = new URL(sitesToAdd[i]);
                     XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
                     factory.setNamespaceAware(false);
                     XmlPullParser xpp =  factory.newPullParser();
@@ -160,10 +193,10 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < titles.size(); i++) {
                 Drawable image = images.get(i);
                 Bitmap bmp = drawableToBitmap(image);
-                RssFeed rssFeed = new RssFeed(bmp, titles.get(i), String.valueOf(itemCounts.get(0)));
+                RssFeed rssFeed = new RssFeed(bmp, titles.get(i), String.valueOf(itemCounts.get(i)));
                 mainMenuAdapter.add(rssFeed);
-
             }
+            if (isAddingUrl) { addUrlEditText.setText(""); }
             progressDialog.dismiss();
         }
 
