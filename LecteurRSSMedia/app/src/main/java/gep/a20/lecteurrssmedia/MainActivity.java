@@ -28,7 +28,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     // Attributes
-    private static final String TAG = "MainActivity";
+    public static final String TAG = "MainActivity";
     ListView listViewMain;
     EditText addUrlEditText;
     private MainMenuAdapter mainMenuAdapter;
@@ -79,15 +79,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     // À faire ici pour ajouter de nouveaux URL.
-                    URL url = new URL(addUrlEditText.getText().toString());
-                    new ProcessInBackground(true).execute();
+//                    URL url = new URL(addUrlEditText.getText().toString());
+                    new ProcessInBackground(MainActivity.this,mainMenuAdapter,true,sites,addUrlEditText).execute();
                 } catch (Exception e) {
                     Log.e(TAG + "-addUrlButton", e.getMessage());
                 }
             }
         });
 
-        new ProcessInBackground(false).execute();
+        new ProcessInBackground(this,mainMenuAdapter,false,sites,addUrlEditText).execute();
     }
 
     /**
@@ -107,139 +107,5 @@ public class MainActivity extends AppCompatActivity {
     /**
      *
      */
-    public class ProcessInBackground extends AsyncTask<Integer, Void, Exception> {
-        // Attributes
-        ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
-        Exception exception = null;
-        boolean isAddingUrl = false;
-        String[] sitesToAdd = sites;
 
-        ArrayList<String> titles;
-        ArrayList<Integer> itemCounts;
-        ArrayList<Drawable> images;
-
-        /**
-         * CTOR : Called each time the ListView needs to be updated.
-         * @param AddingUrl True if RssFeed object has been added.
-         */
-        public ProcessInBackground(boolean AddingUrl) {
-            titles = new ArrayList<>();
-            itemCounts = new ArrayList<>();
-            images = new ArrayList<Drawable>();
-
-            isAddingUrl = AddingUrl;
-            if (isAddingUrl) {
-                sitesToAdd = new String[]{addUrlEditText.getText().toString()};
-            }
-        }
-
-        /**
-         * Called while ListView is in building process to display messages.
-         */
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog.setMessage("Busy loading rss feed...please wait.");
-            progressDialog.show();
-        }
-
-        @Override
-        protected Exception doInBackground(Integer... params) {
-            try {
-                for (int i = 0; i < sitesToAdd.length; i++) {
-                    URL url = new URL(sitesToAdd[i]);
-                    XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-                    factory.setNamespaceAware(false);
-                    XmlPullParser xpp = factory.newPullParser();
-                    xpp.setInput(getInputStream(url), "UTF-8");
-                    boolean insideItem = false;
-                    int itemCount = 0;
-                    int eventType = xpp.getEventType();
-
-                    while (eventType != XmlPullParser.END_DOCUMENT) {
-                        if (eventType == XmlPullParser.START_TAG) {
-                            String test = xpp.getName();
-                            if (xpp.getName().equalsIgnoreCase("image")) {
-                                insideItem = true;
-                            } else if (xpp.getName().equalsIgnoreCase("title")) {
-                                if (insideItem) {
-                                    titles.add(xpp.nextText());
-                                }
-                            } else if (xpp.getName().equalsIgnoreCase("url")) {
-                                String imageUrl = xpp.nextText();
-                                Drawable drawable = LoadImageFromWebOperations(imageUrl);
-                                images.add(drawable);
-                            }
-
-                            if (xpp.getName().equalsIgnoreCase("item")) {
-                                itemCount++;
-                            }
-                        } else if (eventType == XmlPullParser.END_TAG && xpp.getName().equalsIgnoreCase("image")) {
-                            insideItem = false;
-                        }
-                        eventType = xpp.next();
-                    }
-                    itemCounts.add(itemCount);
-                }
-            } catch (MalformedURLException e) {
-                exception = e;
-            } catch (XmlPullParserException e) {
-                exception = e;
-            } catch (IOException e) {
-                exception = e;
-            } catch (Exception e) {
-                exception = e;
-            }
-
-            return exception;
-        }
-
-        @Override
-        protected void onPostExecute(Exception e) {
-            super.onPostExecute(e);
-
-            for (int i = 0; i < titles.size(); i++) {
-                Drawable image = images.get(i);
-                Bitmap bmp = drawableToBitmap(image);
-                RssFeed rssFeed = new RssFeed(bmp, titles.get(i), String.valueOf(itemCounts.get(i)));
-                mainMenuAdapter.add(rssFeed);
-            }
-            if (isAddingUrl) {
-                addUrlEditText.setText("");
-            }
-            progressDialog.dismiss();
-        }
-
-        public Drawable LoadImageFromWebOperations(String url) {
-            try {
-                InputStream is = (InputStream) new URL(url).getContent();
-                Drawable d = Drawable.createFromStream(is, "src name");
-                return d;
-            } catch (Exception e) {
-                Log.e(TAG + "-LoadImageFromWebOperations", e.getMessage());
-                return null;
-            }
-        }
-
-        public Bitmap drawableToBitmap(Drawable drawable) {
-            Bitmap bitmap = null;
-
-            if (drawable instanceof BitmapDrawable) {
-                BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-                if (bitmapDrawable.getBitmap() != null) {
-                    return bitmapDrawable.getBitmap();
-                }
-            }
-            if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-                bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
-            } else {
-                bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-            }
-
-            Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            drawable.draw(canvas);
-            return bitmap;
-        }
-    }
 }

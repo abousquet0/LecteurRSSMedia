@@ -21,7 +21,6 @@ import java.util.List;
  */
 public class MainMenuAdapter extends ArrayAdapter<RssFeed> {
     // Attributes
-    private static final String TAG = "MainMenuAdapter";
     private List<RssFeed> rssFeedList = new ArrayList<RssFeed>();
 
     static class RssFeedViewHolder {
