@@ -15,33 +15,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-interface BtnClickListener {
-    public abstract void onBtnClick(int position);
-}
-
-class RssFeed
-{
-    public RssFeed(Bitmap img, String titleP, String descriptionP) {
-        image = img;
-        title = titleP;
-        description = descriptionP;
-    }
-    Bitmap image;
-    String title;
-    String description;
-
-    public Bitmap getImage(){
-        return image;
-    }
-    public String getTitle(){
-        return title;
-    }
-    public String getDescription(){
-        return description;
-    }
-}
-
+/**
+ * This class has the responsibility to contain the list
+ * of RssFeed object to display as RssFeedViewHolder
+ */
 public class MainMenuAdapter extends ArrayAdapter<RssFeed> {
+    // Attributes
     private static final String TAG = "MainMenuAdapter";
     private List<RssFeed> rssFeedList = new ArrayList<RssFeed>();
 
@@ -50,26 +29,51 @@ public class MainMenuAdapter extends ArrayAdapter<RssFeed> {
         TextView title;
         TextView description;
     }
+
+    /**
+     * CTOR
+     * @param context
+     * @param textViewResourceId
+     */
     public MainMenuAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
     }
 
+    /**
+     * @param object Add an RssFeed to the displayed list
+     */
     @Override
     public void add(RssFeed object) {
         rssFeedList.add(object);
         super.add(object);
     }
 
+    /**
+     * @return the count of rssFeedList
+     */
     @Override
     public int getCount() {
         return this.rssFeedList.size();
     }
 
+    /**
+     * Get RssFeed from rssFeedList
+     * @param index knowed index in rssFeedList
+     * @return RssFeed from rssFeedList
+     */
     @Override
     public RssFeed getItem(int index) {
         return this.rssFeedList.get(index);
     }
 
+    /**
+     * Convert RssFeed as a View Object -> listview_item
+     * Maybe some refactoring is required.
+     * @param position in rssFeedList
+     * @param convertView -> View formated as listview_item
+     * @param parent -> a ListView that contains listview_item
+     * @return View -> listview_item
+     */
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View row = convertView;
@@ -105,6 +109,11 @@ public class MainMenuAdapter extends ArrayAdapter<RssFeed> {
         return row;
     }
 
+    /**
+     * Convert byte array to Bitmap object
+     * @param decodedByte
+     * @return Bitmap
+     */
     public Bitmap decodeToBitmap(byte[] decodedByte) {
         return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
     }
