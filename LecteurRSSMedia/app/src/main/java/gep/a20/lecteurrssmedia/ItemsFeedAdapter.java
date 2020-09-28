@@ -15,7 +15,7 @@ import java.util.List;
  * This class has the responsibility to contain the list
  * of RssFeed object to display as RssFeedViewHolder
  */
-public class MainMenuAdapter extends ArrayAdapter<RssFeed> {
+public class ItemsFeedAdapter extends ArrayAdapter<RssFeed> {
     // Attributes
     int layoutSource;
     private List<RssFeed> rssFeedList = new ArrayList<RssFeed>();
@@ -31,7 +31,7 @@ public class MainMenuAdapter extends ArrayAdapter<RssFeed> {
      * @param context
      * @param textViewResourceId
      */
-    public MainMenuAdapter(Context context, int textViewResourceId) {
+    public ItemsFeedAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
         layoutSource = textViewResourceId;
     }
@@ -79,9 +79,9 @@ public class MainMenuAdapter extends ArrayAdapter<RssFeed> {
             LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             row = inflater.inflate(layoutSource, parent, false);
             viewHolder = new RssFeedViewHolder();
-            viewHolder.image = (ImageView) row.findViewById(R.id.listview_images);
-            viewHolder.title = (TextView) row.findViewById(R.id.Title);
-            viewHolder.description = (TextView) row.findViewById(R.id.Description);
+            viewHolder.image = (ImageView) row.findViewById(R.id.listview_images_nobutton);
+            viewHolder.title = (TextView) row.findViewById(R.id.Title_nobutton);
+            viewHolder.description = (TextView) row.findViewById(R.id.Description_nobutton);
             row.setTag(viewHolder);
         } else {
             viewHolder = (RssFeedViewHolder)row.getTag();
@@ -91,17 +91,6 @@ public class MainMenuAdapter extends ArrayAdapter<RssFeed> {
         viewHolder.image.setImageBitmap(rssFeed.getImage());
         viewHolder.title.setText(rssFeed.getTitle());
         viewHolder.description.setText(rssFeed.getDescription());
-
-        //Handle buttons and add onClickListeners
-        Button deleteBtn = (Button)row.findViewById(R.id.removeButton);
-
-        deleteBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                rssFeedList.remove(position);
-                notifyDataSetChanged();
-            }
-        });
 
         return row;
     }
