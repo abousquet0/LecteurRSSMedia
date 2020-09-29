@@ -4,10 +4,10 @@ import android.graphics.Bitmap;
 
 public class RssItem extends RssFeed{
 
-    String url;
+    String link;
 
-    public RssItem(Bitmap img, String titleP, String descriptionP,String link) {
+    public RssItem(Bitmap img, String titleP, String descriptionP,String url) {
         super(img, titleP, descriptionP);
-        url = link;
+        link = url;
     }
 }

@@ -15,10 +15,10 @@ import java.util.List;
  * This class has the responsibility to contain the list
  * of RssFeed object to display as RssFeedViewHolder
  */
-public class ItemsFeedAdapter extends ArrayAdapter<RssFeed> {
+public class ItemsFeedAdapter extends ArrayAdapter<RssItem> {
     // Attributes
     int layoutSource;
-    private List<RssFeed> rssFeedList = new ArrayList<RssFeed>();
+    private List<RssItem> rssItemsList = new ArrayList<RssItem>();
 
     static class RssFeedViewHolder {
         ImageView image;
@@ -40,8 +40,8 @@ public class ItemsFeedAdapter extends ArrayAdapter<RssFeed> {
      * @param object Add an RssFeed to the displayed list
      */
     @Override
-    public void add(RssFeed object) {
-        rssFeedList.add(object);
+    public void add(RssItem object) {
+        rssItemsList.add(object);
         super.add(object);
     }
 
@@ -50,7 +50,7 @@ public class ItemsFeedAdapter extends ArrayAdapter<RssFeed> {
      */
     @Override
     public int getCount() {
-        return this.rssFeedList.size();
+        return this.rssItemsList.size();
     }
 
     /**
@@ -59,8 +59,8 @@ public class ItemsFeedAdapter extends ArrayAdapter<RssFeed> {
      * @return RssFeed from rssFeedList
      */
     @Override
-    public RssFeed getItem(int index) {
-        return this.rssFeedList.get(index);
+    public RssItem getItem(int index) {
+        return this.rssItemsList.get(index);
     }
 
     /**
@@ -87,10 +87,13 @@ public class ItemsFeedAdapter extends ArrayAdapter<RssFeed> {
             viewHolder = (RssFeedViewHolder)row.getTag();
         }
 
-        RssFeed rssFeed = getItem(position);
-        viewHolder.image.setImageBitmap(rssFeed.getImage());
-        viewHolder.title.setText(rssFeed.getTitle());
-        viewHolder.description.setText(rssFeed.getDescription());
+        RssItem rssItem = getItem(position);
+        viewHolder.image.setImageBitmap(rssItem.getImage());
+        viewHolder.title.setText(rssItem.getTitle());
+        String description = rssItem.getDescription();
+        if(description.length() > 50)
+        description = description.substring(0, description.indexOf('.'));//get only first sentence if description is too long
+        viewHolder.description.setText(description);
 
         return row;
     }

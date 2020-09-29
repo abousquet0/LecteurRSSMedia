@@ -13,13 +13,15 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainProcessInBackground extends AsyncTask<Integer, Void, Exception> {
     // Attributes
     ProgressDialog progressDialog;
     Exception exception = null;
     boolean isAddingUrl = false;
-    String[] sitesToAdd;
+    List<String> sitesToAdd;
     MainActivity mainActivity;
     ArrayList<String> titles;
     ArrayList<Integer> itemCounts;
@@ -31,7 +33,7 @@ public class MainProcessInBackground extends AsyncTask<Integer, Void, Exception>
      * CTOR : Called each time the ListView needs to be updated.
      * @param AddingUrl True if RssFeed object has been added.
      */
-    public MainProcessInBackground(MainActivity mainAct, MainMenuAdapter adapter, boolean AddingUrl, String[] sites, EditText addUrlET) {
+    public MainProcessInBackground(MainActivity mainAct, MainMenuAdapter adapter, boolean AddingUrl, List<String> sites, EditText addUrlET) {
         titles = new ArrayList<>();
         itemCounts = new ArrayList<>();
         images = new ArrayList<Drawable>();
@@ -42,7 +44,8 @@ public class MainProcessInBackground extends AsyncTask<Integer, Void, Exception>
         progressDialog = new ProgressDialog(mainActivity);
         addUrlEditText = addUrlET;
         if (isAddingUrl) {
-            sitesToAdd = new String[]{addUrlEditText.getText().toString()};
+            sitesToAdd = Arrays.asList(addUrlEditText.getText().toString());
+           sites.add(addUrlEditText.getText().toString());
         }
     }
 
@@ -59,8 +62,8 @@ public class MainProcessInBackground extends AsyncTask<Integer, Void, Exception>
     @Override
     protected Exception doInBackground(Integer... params) {
         try {
-            for (int i = 0; i < sitesToAdd.length; i++) {
-                URL url = new URL(sitesToAdd[i]);
+            for (int i = 0; i < sitesToAdd.size(); i++) {
+                URL url = new URL(sitesToAdd.get(i));
                 XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
                 factory.setNamespaceAware(false);
                 XmlPullParser xpp = factory.newPullParser();

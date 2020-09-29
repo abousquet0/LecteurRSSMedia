@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,6 +60,27 @@ public class Utilities {
             Log.e(TAG + "-getInputStream", e.getMessage());
             return null;
         }
+    }
+
+
+    public String getNodeValue(String tag, XmlPullParser xpp) throws IOException, XmlPullParserException {
+        int eventType = xpp.getEventType();
+        String returnValue = "";
+        try{
+            returnValue = xpp.nextText();
+        }catch(Exception ex){
+            boolean continueLoop = true;
+            while(continueLoop){
+                eventType = xpp.next();
+
+                if(xpp.getText() != null)
+                    returnValue += xpp.getText();
+
+                if(xpp.getName() != null && xpp.getName().equalsIgnoreCase(tag))
+                    continueLoop = false;
+            }
+        }
+        return returnValue;
     }
 
 

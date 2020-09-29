@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.text.Html;
 import android.widget.EditText;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -19,16 +20,12 @@ public class ItemsFeedProcessInBackground extends AsyncTask<Integer, Void, Excep
     ProgressDialog progressDialog;
     Exception exception = null;
     ItemsFeedActivity itemsFeedActivity;
-    String title;
-    Drawable image;
-    String description;
-    String linkToContent;//Address of the item content
     ItemsFeedAdapter itemsFeedAdapter;
     EditText addUrlEditText;
     int itemCount = 0;
     String urlAddress = ""; //Address of the parent URL
     Utilities utility = new Utilities();
-
+    ArrayList<RssItem> items = new ArrayList<RssItem>();
     /**
      * CTOR : Called each time the ListView needs to be updated.
      */
@@ -59,28 +56,37 @@ public class ItemsFeedProcessInBackground extends AsyncTask<Integer, Void, Excep
                 xpp.setInput(utility.getInputStream(url), "UTF-8");
                 boolean insideItem = false;
                 int eventType = xpp.getEventType();
+                String title = "";
+                Drawable image;
+                String description = "";
+                String link ="";
 
                 while (eventType != XmlPullParser.END_DOCUMENT) {
-                    if (eventType == XmlPullParser.START_TAG) {
-                        String test = xpp.getName();
-                        if (xpp.getName().equalsIgnoreCase("image")) {
-                            insideItem = true;
-                        } else if (xpp.getName().equalsIgnoreCase("title")) {
-                            if (insideItem) {
-                                title = xpp.nextText();
+                        if (eventType == XmlPullParser.START_TAG) {
+                            String test = xpp.getName();
+                            if (xpp.getName().equalsIgnoreCase("item")) {
+                                insideItem = true;
+                            } else if (xpp.getName().equalsIgnoreCase("title")) {
+                                if (insideItem) {
+                                    title = utility.getNodeValue("title",xpp);
+                                }
+                            } else if (xpp.getName().equalsIgnoreCase("link")) {
+                                link = utility.getNodeValue("link",xpp);
+                            } else if (xpp.getName().equalsIgnoreCase("description")) {
+                                description = Html.fromHtml(utility.getNodeValue("description",xpp)).toString();
                             }
-                        } else if (xpp.getName().equalsIgnoreCase("url")) {
-                            String imageUrl = xpp.nextText();
-                            Drawable drawable = utility.LoadImageFromWebOperations(imageUrl);
-                            image = drawable;
+                            if (xpp.getName().equalsIgnoreCase("item")) {
+                                itemCount++;
+                            }
+                        } else if (eventType == XmlPullParser.END_TAG && xpp.getName().equalsIgnoreCase("item")) {
+                            insideItem = false;
+                            Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+                            Bitmap temp = Bitmap.createBitmap(2, 2, conf);
+                            RssItem item = new RssItem(temp, title, description, link);
+                            items.add(item);
                         }
-                        if (xpp.getName().equalsIgnoreCase("item")) {
-                            itemCount++;
-                        }
-                    } else if (eventType == XmlPullParser.END_TAG && xpp.getName().equalsIgnoreCase("image")) {
-                        insideItem = false;
-                    }
-                    eventType = xpp.next();
+                        eventType = xpp.next();
+
                 }
         } catch (MalformedURLException e) {
             exception = e;
@@ -98,9 +104,11 @@ public class ItemsFeedProcessInBackground extends AsyncTask<Integer, Void, Excep
     @Override
     protected void onPostExecute(Exception e) {
         super.onPostExecute(e);
-            Bitmap bmp = utility.drawableToBitmap(image);
-            RssFeed rssFeed = new RssFeed(bmp, title, String.valueOf(itemCount));
-            itemsFeedAdapter.add(rssFeed);
+        for(RssItem item : items){
+            itemsFeedAdapter.add(item);
+        }
         progressDialog.dismiss();
     }
+
+
 }

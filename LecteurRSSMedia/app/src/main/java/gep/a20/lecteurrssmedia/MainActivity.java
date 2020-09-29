@@ -10,6 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,19 +21,19 @@ public class MainActivity extends AppCompatActivity {
     ListView listViewMain;
     EditText addUrlEditText;
     private MainMenuAdapter mainMenuAdapter;
-    String[] sites = {"https://ici.radio-canada.ca/rss/4159",
-            "https://ici.radio-canada.ca/rss/1000524",
-            "https://ici.radio-canada.ca/rss/7239",
-            "https://ici.radio-canada.ca/rss/4163",
-            "https://ici.radio-canada.ca/rss/5717",
-            "https://visualstudiotalkshow.libsyn.com/rss",
-//          "http://www.lapresse.ca/actualites/justice-et-faits-divers/rss", // Le rss de la presse ne fonctionne pas ici. À voir.
-            "https://feeds.twit.tv/sn.xml",
-            "https://feeds.twit.tv/sn_video_hd.xml"};
-    //    ArrayList<String> titles;
-    //    ArrayList<Integer> itemCounts;
-    //    ArrayList<Drawable> images;
+    List<String> sites = new ArrayList<>();
 
+    private void initializeDefaultSite(){
+        sites.add( "https://ici.radio-canada.ca/rss/4159");
+        sites.add( "https://ici.radio-canada.ca/rss/1000524");
+        sites.add( "https://ici.radio-canada.ca/rss/7239");
+        sites.add( "https://ici.radio-canada.ca/rss/4163");
+        sites.add( "https://ici.radio-canada.ca/rss/5717");
+        sites.add("https://visualstudiotalkshow.libsyn.com/rss");
+        sites.add("https://feeds.twit.tv/sn.xml");
+        sites.add("https://feeds.twit.tv/sn_video_hd.xml");
+        sites.add("https://www.lapresse.ca/actualites/justice-et-faits-divers/rss");
+    }
     /**
      * CTOR
      * @param savedInstanceState
@@ -41,21 +44,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         listViewMain = (ListView) findViewById(R.id.list_view);
         addUrlEditText = (EditText) findViewById(R.id.addUrl);
-
+        initializeDefaultSite();
         // Set the ListView in MainActivity
         mainMenuAdapter = new MainMenuAdapter(getApplicationContext(), R.layout.listview_item);
         listViewMain.setAdapter(mainMenuAdapter);
-
-//        titles = new ArrayList<>();
-//        itemCounts = new ArrayList<>();
-//        images = new ArrayList<Drawable>();
-
 
         listViewMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent appInfo = new Intent(MainActivity.this, ItemsFeedActivity.class);
-                appInfo.putExtra("url", sites[i]);
+                appInfo.putExtra("url", sites.get(i));
                 startActivity(appInfo);
             }
         });
@@ -77,11 +75,4 @@ public class MainActivity extends AppCompatActivity {
 
         new MainProcessInBackground(this,mainMenuAdapter,false,sites,addUrlEditText).execute();
     }
-
-
-
-    /**
-     *
-     */
-
 }
