@@ -92,7 +92,7 @@ public class ItemsFeedAdapter extends ArrayAdapter<RssItem> {
         viewHolder.title.setText(rssItem.getTitle());
         String description = rssItem.getDescription();
         if(description.length() > 50)
-        description = description.substring(0, description.indexOf('.'));//get only first sentence if description is too long
+        description = description.substring(0, 50);//get only first sentence if description is too long
         viewHolder.description.setText(description);
 
         return row;

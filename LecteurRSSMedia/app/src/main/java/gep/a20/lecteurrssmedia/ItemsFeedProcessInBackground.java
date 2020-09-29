@@ -57,32 +57,46 @@ public class ItemsFeedProcessInBackground extends AsyncTask<Integer, Void, Excep
                 boolean insideItem = false;
                 int eventType = xpp.getEventType();
                 String title = "";
-                Drawable image;
+                Drawable image = null;
                 String description = "";
                 String link ="";
+
+                //Image vide par defaut si on ne trouve pas l'image
+                Bitmap bmp;
+                Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+                 bmp = Bitmap.createBitmap(2, 2, conf);
 
                 while (eventType != XmlPullParser.END_DOCUMENT) {
                         if (eventType == XmlPullParser.START_TAG) {
                             String test = xpp.getName();
                             if (xpp.getName().equalsIgnoreCase("item")) {
                                 insideItem = true;
-                            } else if (xpp.getName().equalsIgnoreCase("title")) {
+                            } else if (xpp.getName().equalsIgnoreCase("title") && insideItem) {
                                 if (insideItem) {
                                     title = utility.getNodeValue("title",xpp);
                                 }
-                            } else if (xpp.getName().equalsIgnoreCase("link")) {
+                            } else if (xpp.getName().equalsIgnoreCase("link") && insideItem) {
                                 link = utility.getNodeValue("link",xpp);
-                            } else if (xpp.getName().equalsIgnoreCase("description")) {
+                            } else if (xpp.getName().equalsIgnoreCase("description") && insideItem) {
                                 description = Html.fromHtml(utility.getNodeValue("description",xpp)).toString();
+                            }
+                            else if (xpp.getName().equalsIgnoreCase("itunes:image") && insideItem) {
+                                image = getImageItunesTag("itunes:image",xpp);
+                                if(image != null)
+                                bmp = utility.drawableToBitmap(image);
+                            }
+                            else if (xpp.getName().equalsIgnoreCase("enclosure") && insideItem) {
+
+                                image = getImageEnclosureTag("itunes:image",xpp);
+                                if(image != null)
+                                    bmp = utility.drawableToBitmap(image);
                             }
                             if (xpp.getName().equalsIgnoreCase("item")) {
                                 itemCount++;
                             }
-                        } else if (eventType == XmlPullParser.END_TAG && xpp.getName().equalsIgnoreCase("item")) {
+                        } else if (eventType == XmlPullParser.END_TAG && xpp.getName().equalsIgnoreCase("item") && insideItem) {
                             insideItem = false;
-                            Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-                            Bitmap temp = Bitmap.createBitmap(2, 2, conf);
-                            RssItem item = new RssItem(temp, title, description, link);
+                            RssItem item = new RssItem(bmp, title, description, link);
                             items.add(item);
                         }
                         eventType = xpp.next();
@@ -110,5 +124,20 @@ public class ItemsFeedProcessInBackground extends AsyncTask<Integer, Void, Excep
         progressDialog.dismiss();
     }
 
+    private Drawable getImageItunesTag(String tag,XmlPullParser xpp){
+         String url =  xpp.getAttributeValue(null,"href");
+        Drawable drawable = utility.LoadImageFromWebOperations(url);
+        return drawable;
+    }
+
+    private Drawable getImageEnclosureTag(String tag,XmlPullParser xpp){
+        String type =  xpp.getAttributeValue(null,"type");
+        if(type.contains("image")){
+            String url =  xpp.getAttributeValue(null,"url");
+            Drawable drawable = utility.LoadImageFromWebOperations(url);
+            return drawable;
+        }
+        return null;
+    }
 
 }
