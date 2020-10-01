@@ -1,6 +1,5 @@
 package gep.a20.lecteurrssmedia;
 
-import android.content.Intent;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,10 +13,18 @@ public class ViewItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_item);
 
-        Intent intent = getIntent();
-        String url = intent.getStringExtra("url");
+        title = findViewById(R.id.textViewTitle);
+        RssItemParcelable rssItemParcelable;
 
-        title = (TextView) findViewById(R.id.textView3);
-        title.setText(url);
+        try{
+            rssItemParcelable = (RssItemParcelable)getIntent().getParcelableExtra("rssItem");
+            title.setText(rssItemParcelable.getTitle());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+//        Bundle data = getIntent().getExtras();
+//        rssItemParcelable = data.getParcelable("rssItem");
+
     }
 }

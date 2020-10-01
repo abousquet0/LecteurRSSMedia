@@ -7,13 +7,35 @@
         android:layout_height="match_parent"
         tools:context=".ViewItemActivity">
 
-    <TextView
-            android:text="TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView3"
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="414dp"
+            android:layout_height="559dp"
+            android:id="@+id/linearLayout"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="310dp"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintVertical_bias="1.0"
+            app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+                android:text="Titre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewTitle"/>
+
+        <TextView
+                android:text="Date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewPublishDate"/>
+
+        <TextView
+                android:text="Description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewDescription"/>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
