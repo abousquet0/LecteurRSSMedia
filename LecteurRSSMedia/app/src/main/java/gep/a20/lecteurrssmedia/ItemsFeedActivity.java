@@ -3,13 +3,13 @@ package gep.a20.lecteurrssmedia;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
 
 public class ItemsFeedActivity extends AppCompatActivity {
 
@@ -36,31 +36,37 @@ public class ItemsFeedActivity extends AppCompatActivity {
         listViewItemsFeed.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                // Get good stuff
-                ImageView img = adapterView.findViewById(R.id.listview_images_nobutton);
-                Bitmap image = ((BitmapDrawable)img.getDrawable()).getBitmap();
+                // Get good stuff from clicked itemsFeedAdapter
+                String image = "image";
                 String description = (String)((TextView)adapterView.findViewById(R.id.Description_nobutton)).getText();
-                String link = (String)((TextView)adapterView.findViewById(R.id.Description_nobutton)).getText();
+                String link = "Leon";
                 String title = (String)((TextView)adapterView.findViewById(R.id.Title_nobutton)).getText();
-
-                // Create and setRssItemParcelable
-                RssItemParcelable rssItemParcelable = new RssItemParcelable();
-                rssItemParcelable.setImage(image);
-                rssItemParcelable.setDescription(description);
-                rssItemParcelable.setLink(link);
-                rssItemParcelable.setTitle(title);
-
-                // Create Intent
-                Intent intent = new Intent(ItemsFeedActivity.this, ViewItemActivity.class);
-                Bundle bundle = new Bundle();
-                try{
-                    bundle.putParcelable(PAR_KEY, rssItemParcelable);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                intent.putExtra("rssItem",bundle);
-                startActivity(intent);
+                parcelRssItem(description, image,link, title);
             }
         });
+    }
+
+
+    private void parcelRssItem(String description, String image, String link, String title) {
+        // Create and setRssItemParcelable
+        RssItemParcelable rssItemParcelable = new RssItemParcelable();
+        rssItemParcelable.setImage(image);
+        rssItemParcelable.setDescription(description);
+        rssItemParcelable.setLink(link);
+        rssItemParcelable.setTitle(title);
+        startViewItemActivity(rssItemParcelable);
+    }
+
+    private void startViewItemActivity(RssItemParcelable rssItemParcelable) {
+        // Create Intent
+        Intent intent = new Intent(this, ViewItemActivity.class);
+        Bundle bundle = new Bundle();
+        try{
+            bundle.putParcelable(PAR_KEY, rssItemParcelable);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

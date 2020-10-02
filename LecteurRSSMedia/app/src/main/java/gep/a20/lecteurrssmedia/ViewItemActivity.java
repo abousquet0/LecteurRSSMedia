@@ -17,14 +17,10 @@ public class ViewItemActivity extends AppCompatActivity {
         RssItemParcelable rssItemParcelable;
 
         try{
-            rssItemParcelable = (RssItemParcelable)getIntent().getParcelableExtra("rssItem");
+            rssItemParcelable = (RssItemParcelable)getIntent().getParcelableExtra(ItemsFeedActivity.PAR_KEY);
             title.setText(rssItemParcelable.getTitle());
         }catch(Exception e){
             e.printStackTrace();
         }
-
-//        Bundle data = getIntent().getExtras();
-//        rssItemParcelable = data.getParcelable("rssItem");
-
     }
 }
