@@ -60,6 +60,8 @@ public class ItemsFeedProcessInBackground extends AsyncTask<Integer, Void, Excep
                 Drawable image = null;
                 String description = "";
                 String link ="";
+                String imageUrl = "";
+                String pubDate = "";
 
                 //Image vide par defaut si on ne trouve pas l'image
                 Bitmap bmp;
@@ -79,24 +81,28 @@ public class ItemsFeedProcessInBackground extends AsyncTask<Integer, Void, Excep
                                 link = utility.getNodeValue("link",xpp);
                             } else if (xpp.getName().equalsIgnoreCase("description") && insideItem) {
                                 description = Html.fromHtml(utility.getNodeValue("description",xpp)).toString();
-                            }
-                            else if (xpp.getName().equalsIgnoreCase("itunes:image") && insideItem) {
+                            } else if (xpp.getName().equalsIgnoreCase("pubDate") && insideItem) {
+                                pubDate = Html.fromHtml(utility.getNodeValue("pubDate",xpp)).toString();
+                            }else if (xpp.getName().equalsIgnoreCase("itunes:image") && insideItem) {
                                 image = getImageItunesTag("itunes:image",xpp);
-                                if(image != null)
-                                bmp = utility.drawableToBitmap(image);
-                            }
-                            else if (xpp.getName().equalsIgnoreCase("enclosure") && insideItem) {
+                                if (image != null) {
+                                    bmp = utility.drawableToBitmap(image);
+                                    imageUrl = utility.getNodeValue("itunes:image",xpp);
+                                }
+                            } else if (xpp.getName().equalsIgnoreCase("enclosure") && insideItem) {
 
                                 image = getImageEnclosureTag("itunes:image",xpp);
-                                if(image != null)
+                                if(image != null) {
                                     bmp = utility.drawableToBitmap(image);
+                                    imageUrl = utility.getNodeValue("itunes:image",xpp);
+                                }
                             }
                             if (xpp.getName().equalsIgnoreCase("item")) {
                                 itemCount++;
                             }
                         } else if (eventType == XmlPullParser.END_TAG && xpp.getName().equalsIgnoreCase("item") && insideItem) {
                             insideItem = false;
-                            RssItem item = new RssItem(bmp, title, description, link);
+                            RssItem item = new RssItem(bmp, title, description, link, imageUrl, pubDate );
                             items.add(item);
                         }
                         eventType = xpp.next();

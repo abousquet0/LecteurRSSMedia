@@ -19,13 +19,7 @@ public class RssFeed {
     }
 
     // Methods
-    public Bitmap getImage(){
-        return image;
-    }
-    public String getTitle(){
-        return title;
-    }
-    public String getDescription(){
-        return description;
-    }
+    public Bitmap getImage() { return image; }
+    public String getTitle() { return title; }
+    public String getDescription() { return description; }
 }

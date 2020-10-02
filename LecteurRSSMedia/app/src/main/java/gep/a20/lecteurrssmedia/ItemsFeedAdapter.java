@@ -20,10 +20,13 @@ public class ItemsFeedAdapter extends ArrayAdapter<RssItem> {
     int layoutSource;
     private List<RssItem> rssItemsList = new ArrayList<RssItem>();
 
-    static class RssFeedViewHolder {
+    static class RssItemViewHolder {
         ImageView image;
         TextView title;
         TextView description;
+        TextView link;
+        TextView imageUrl;
+        TextView pubDate;
     }
 
     /**
@@ -63,33 +66,32 @@ public class ItemsFeedAdapter extends ArrayAdapter<RssItem> {
         return this.rssItemsList.get(index);
     }
 
-    /**
-     * Convert RssFeed as a View Object -> listview_item
-     * Maybe some refactoring is required.
-     * @param position in rssFeedList
-     * @param convertView -> View formated as listview_item
-     * @param parent -> a ListView that contains listview_item
-     * @return View -> listview_item
-     */
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View row = convertView;
-        RssFeedViewHolder viewHolder;
+        RssItemViewHolder viewHolder;
         if (row == null) {
             LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             row = inflater.inflate(layoutSource, parent, false);
-            viewHolder = new RssFeedViewHolder();
+            viewHolder = new RssItemViewHolder();
             viewHolder.image = (ImageView) row.findViewById(R.id.listview_images_nobutton);
             viewHolder.title = (TextView) row.findViewById(R.id.Title_nobutton);
             viewHolder.description = (TextView) row.findViewById(R.id.Description_nobutton);
+            viewHolder.imageUrl = (TextView) row.findViewById(R.id.ImageUrl_nobutton);
+            viewHolder.link = (TextView) row.findViewById(R.id.Link_nobutton);
+            viewHolder.pubDate = (TextView) row.findViewById(R.id.PubDate_nobutton);
             row.setTag(viewHolder);
         } else {
-            viewHolder = (RssFeedViewHolder)row.getTag();
+            viewHolder = (RssItemViewHolder)row.getTag();
         }
 
         RssItem rssItem = getItem(position);
         viewHolder.image.setImageBitmap(rssItem.getImage());
         viewHolder.title.setText(rssItem.getTitle());
+        viewHolder.imageUrl.setText(rssItem.getImageUrl());
+        viewHolder.link.setText(rssItem.getLink());
+        viewHolder.pubDate.setText(rssItem.getPubDate());
+
         String description = rssItem.getDescription();
         if(description.length() > 50)
         description = description.substring(0, 50);//get only first sentence if description is too long
