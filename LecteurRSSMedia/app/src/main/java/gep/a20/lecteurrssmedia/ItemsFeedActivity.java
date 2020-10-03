@@ -37,22 +37,24 @@ public class ItemsFeedActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 // Get good stuff from clicked itemsFeedAdapter
-                String image = "image";
+                String image = (String)((TextView)adapterView.findViewById(R.id.ImageUrl_nobutton)).getText();
                 String description = (String)((TextView)adapterView.findViewById(R.id.Description_nobutton)).getText();
-                String link = "Leon";
+                String link = (String)((TextView)adapterView.findViewById(R.id.Link_nobutton)).getText();
+                String pubDate = (String)((TextView)adapterView.findViewById(R.id.PubDate_nobutton)).getText();
                 String title = (String)((TextView)adapterView.findViewById(R.id.Title_nobutton)).getText();
-                parcelRssItem(description, image,link, title);
+                parcelRssItem(description, image,link, pubDate, title);
             }
         });
     }
 
 
-    private void parcelRssItem(String description, String image, String link, String title) {
+    private void parcelRssItem(String description, String image, String link, String pubDate, String title) {
         // Create and setRssItemParcelable
         RssItemParcelable rssItemParcelable = new RssItemParcelable();
         rssItemParcelable.setImage(image);
         rssItemParcelable.setDescription(description);
         rssItemParcelable.setLink(link);
+        rssItemParcelable.setPubDate(pubDate);
         rssItemParcelable.setTitle(title);
         startViewItemActivity(rssItemParcelable);
     }

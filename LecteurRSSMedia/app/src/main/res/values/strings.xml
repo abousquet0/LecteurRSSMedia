@@ -3,4 +3,7 @@
     <string name="mainpage_title">Liste des flux RSS</string>
     <string name="add_btn">Ajouter</string>
     <string name="items_feed">Liste des articles</string>
+    <string name="imageUrl_contentDescription">Voir la nouvelle</string>
+    <string name="vide">vide</string>
+    <string name="inconnue">inconnue</string>
 </resources>

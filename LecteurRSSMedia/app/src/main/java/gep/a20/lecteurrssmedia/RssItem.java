@@ -20,5 +20,5 @@ public class RssItem extends RssFeed{
     // Methods
     public String getLink() { return link; }
     public String getImageUrl() { return imageUrl; }
-    public String getPubDate() { return description; }
+    public String getPubDate() { return pubDate; }
 }
