@@ -3,6 +3,9 @@ package gep.a20.lecteurrssmedia;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.Html;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,9 +86,17 @@ public class ItemsFeedAdapter extends ArrayAdapter<RssItem> {
         viewHolder.image.setImageBitmap(rssItem.getImage());
         viewHolder.title.setText(rssItem.getTitle());
 
+        // Remove any HTML from description
         String description = rssItem.getDescription();
+        Spanned spanned = Html.fromHtml(description);
+        char[] chars = new char[spanned.length()];
+        TextUtils.getChars(spanned, 0, spanned.length(), chars, 0);
+        description = new String(chars);
+        description = description.replaceAll("[^A-Za-z0-9 ]", "");
+
         if(description.length() > 50) {
             description = description.substring(0, 50);//get only first sentence if description is too long
+            description += "...";
         }
         viewHolder.description.setText(description);
 

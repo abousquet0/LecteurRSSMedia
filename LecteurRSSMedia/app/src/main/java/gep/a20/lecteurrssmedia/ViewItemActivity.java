@@ -1,7 +1,6 @@
 package gep.a20.lecteurrssmedia;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Base64;
 import android.view.View;
@@ -11,6 +10,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
+/**
+ * This class is responsible to display important content from an RSS item
+ * @author Alexandre Pouliot
+ */
 public class ViewItemActivity extends AppCompatActivity {
 
     // Attributes
@@ -18,8 +21,6 @@ public class ViewItemActivity extends AppCompatActivity {
     private WebView description;
     private TextView pubDate;
     private TextView title;
-
-    Utilities utility = new Utilities();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,8 @@ public class ViewItemActivity extends AppCompatActivity {
      */
     public void setViewElements() {
 
-        String unencodedHtml ="<html><body>" + RssViewItem.descriptionView +"</body></html>";
+        String addBootstrap = "<head><link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'></head>";
+        String unencodedHtml = "<html>" + addBootstrap + "<body>" + RssViewItem.descriptionView + "</body></html>";
         String encodedHtml = Base64.encodeToString(unencodedHtml.getBytes(), Base64.NO_PADDING);
         description.loadData(encodedHtml, "text/html", "base64");
 
@@ -59,21 +61,11 @@ public class ViewItemActivity extends AppCompatActivity {
     }
 
     /**
-     *
-     * @param url
-     * @return
-     */
-    private Drawable getDrawableFromUrlString(String url) {
-        Drawable drawable = utility.LoadImageFromWebOperations(url);
-        return drawable;
-    }
-
-    /**
      * Open web browser at the link contain in the view tag
      * @param view view that contains a URL string in the tag
      */
-    public void openBrowser(View view){
-        String url = (String)view.getTag();
+    public void openBrowser(View view) {
+        String url = (String) view.getTag();
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
     }
 }

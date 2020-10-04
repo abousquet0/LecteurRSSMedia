@@ -12,6 +12,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alexandre Pouliot
@@ -55,10 +57,12 @@ public class ViewItemProcessInBackground extends AsyncTask<Integer, Void, Except
             // scope attribute
             XmlPullParser xpp = getXmlPullParser();
             int eventType = xpp.getEventType();
+            int audioCounter = 0;
             boolean isTitleFind = false;
             Drawable image = null;
             String tag = "";
             String lastTitleFind = "";
+            List<String> mediaLinks = new ArrayList<>();
 
             // Default image if null
             RssViewItem.imageView = Bitmap.createBitmap(2, 2, Bitmap.Config.ARGB_8888);
@@ -88,7 +92,7 @@ public class ViewItemProcessInBackground extends AsyncTask<Integer, Void, Except
                             RssViewItem.pubDateView = utility.getNodeValue("pubDate", xpp);
                             break;
                         case "enclosure":
-                            image = getImageEnclosureTag("itunes:image", xpp);
+                            image = getImageEnclosureTag(xpp);
                             if (image != null) {
                                 RssViewItem.imageView = utility.drawableToBitmap(image);
                             }
@@ -100,6 +104,9 @@ public class ViewItemProcessInBackground extends AsyncTask<Integer, Void, Except
                             }
                             break;
                         default:
+                            String media = findIfMediaLink(tag, xpp);
+                            if (media != "")
+                                mediaLinks.add(media);
                             break;
                     }
                 }
@@ -107,6 +114,14 @@ public class ViewItemProcessInBackground extends AsyncTask<Integer, Void, Except
                     break;
                 } else
                     eventType = xpp.next();
+            }
+            // Add extra link to web page
+            RssViewItem.descriptionView += "<a href='" + RssViewItem.linkImageView + "' class='btn btn-info btn-lg'>" +
+                    "<span class='glyphicon glyphicon-globe'></span> Web</a>";
+            // Add .mp3 link
+            for (String media : mediaLinks) {
+                audioCounter++;
+                RssViewItem.descriptionView += "<a class='btn btn-success btn-lg' href='" + media + "'><span class='glyphicon glyphicon-play'></span>" + " Play audio" + audioCounter + "</a>";
             }
         } catch (MalformedURLException e) {
             exception = e;
@@ -121,6 +136,10 @@ public class ViewItemProcessInBackground extends AsyncTask<Integer, Void, Except
         return exception;
     }
 
+    /**
+     * Finish to set data into the viewItemActivity
+     * @param e exception expected by parent class
+     */
     @Override
     protected void onPostExecute(Exception e) {
         super.onPostExecute(e);
@@ -131,7 +150,6 @@ public class ViewItemProcessInBackground extends AsyncTask<Integer, Void, Except
     /**
      * Get a new XmlPullParser to get the data for
      * the given title and the given RSS url.
-     *
      * @return XmlPullParser set with the url get in CTOR
      * @throws MalformedURLException
      * @throws XmlPullParserException
@@ -145,13 +163,23 @@ public class ViewItemProcessInBackground extends AsyncTask<Integer, Void, Except
         return xpp;
     }
 
+    /**
+     * Get article image from RSS itune style
+     * @param xpp
+     * @return
+     */
     private Drawable getImageItunesTag(XmlPullParser xpp) {
         String url = xpp.getAttributeValue(null, "href");
         Drawable drawable = utility.LoadImageFromWebOperations(url);
         return drawable;
     }
 
-    private Drawable getImageEnclosureTag(String tag, XmlPullParser xpp) {
+    /**
+     * Get article image from more or less standard RSS using enclosure tag
+     * @param xpp
+     * @return
+     */
+    private Drawable getImageEnclosureTag(XmlPullParser xpp) {
         String type = xpp.getAttributeValue(null, "type");
         if (type.contains("image")) {
             String url = xpp.getAttributeValue(null, "url");
@@ -159,5 +187,33 @@ public class ViewItemProcessInBackground extends AsyncTask<Integer, Void, Except
             return drawable;
         }
         return null;
+    }
+
+    /**
+     * Get url for .mp3 files to play
+     * @param tag
+     * @param xpp
+     * @return String url to play a .mp3 file
+     * @throws IOException
+     * @throws XmlPullParserException
+     */
+    private String findIfMediaLink(String tag, XmlPullParser xpp) throws IOException, XmlPullParserException {
+        int eventType = xpp.getEventType();
+        String returnValue = "";
+        try {
+            boolean continueLoop = true;
+            while (continueLoop) {
+                xpp.next();
+
+                if (xpp.getText() != null && xpp.getText().contains(".mp3"))
+                    returnValue += xpp.getText();
+
+                if (xpp.getName() != null && xpp.getName().equalsIgnoreCase(tag))
+                    continueLoop = false;
+            }
+        } catch (Exception ex) {
+
+        }
+        return returnValue;
     }
 }
