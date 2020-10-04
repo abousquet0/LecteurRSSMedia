@@ -67,11 +67,9 @@ public class Utilities {
         int eventType = xpp.getEventType();
         String returnValue = "";
         try{
-            returnValue = xpp.nextText();
-        }catch(Exception ex){
             boolean continueLoop = true;
             while(continueLoop){
-                eventType = xpp.next();
+                xpp.next();
 
                 if(xpp.getText() != null)
                     returnValue += xpp.getText();
@@ -79,6 +77,8 @@ public class Utilities {
                 if(xpp.getName() != null && xpp.getName().equalsIgnoreCase(tag))
                     continueLoop = false;
             }
+        }catch(Exception ex){
+
         }
         return returnValue;
     }

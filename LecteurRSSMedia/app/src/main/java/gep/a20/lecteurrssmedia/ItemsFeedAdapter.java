@@ -24,9 +24,6 @@ public class ItemsFeedAdapter extends ArrayAdapter<RssItem> {
         ImageView image;
         TextView title;
         TextView description;
-        TextView link;
-        TextView imageUrl;
-        TextView pubDate;
     }
 
     /**
@@ -77,9 +74,6 @@ public class ItemsFeedAdapter extends ArrayAdapter<RssItem> {
             viewHolder.image = (ImageView) row.findViewById(R.id.listview_images_nobutton);
             viewHolder.title = (TextView) row.findViewById(R.id.Title_nobutton);
             viewHolder.description = (TextView) row.findViewById(R.id.Description_nobutton);
-            viewHolder.imageUrl = (TextView) row.findViewById(R.id.ImageUrl_nobutton);
-            viewHolder.link = (TextView) row.findViewById(R.id.Link_nobutton);
-            viewHolder.pubDate = (TextView) row.findViewById(R.id.PubDate_nobutton);
             row.setTag(viewHolder);
         } else {
             viewHolder = (RssItemViewHolder)row.getTag();
@@ -88,13 +82,11 @@ public class ItemsFeedAdapter extends ArrayAdapter<RssItem> {
         RssItem rssItem = getItem(position);
         viewHolder.image.setImageBitmap(rssItem.getImage());
         viewHolder.title.setText(rssItem.getTitle());
-        viewHolder.imageUrl.setText(rssItem.getImageUrl());
-        viewHolder.link.setText(rssItem.getLink());
-        viewHolder.pubDate.setText(rssItem.getPubDate());
 
         String description = rssItem.getDescription();
-        if(description.length() > 50)
-        description = description.substring(0, 50);//get only first sentence if description is too long
+        if(description.length() > 50) {
+            description = description.substring(0, 50);//get only first sentence if description is too long
+        }
         viewHolder.description.setText(description);
 
         return row;

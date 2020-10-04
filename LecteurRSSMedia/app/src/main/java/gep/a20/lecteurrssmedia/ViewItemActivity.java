@@ -3,7 +3,9 @@ package gep.a20.lecteurrssmedia;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.util.Base64;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,10 +14,11 @@ import android.os.Bundle;
 public class ViewItemActivity extends AppCompatActivity {
 
     // Attributes
-    ImageView image;
-    TextView description;
-    TextView pubDate;
-    TextView title;
+    private ImageView image;
+    private WebView description;
+    private TextView pubDate;
+    private TextView title;
+
     Utilities utility = new Utilities();
 
     @Override
@@ -24,8 +27,8 @@ public class ViewItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_item);
         // Get view elements
         getViewElements();
-        // Get data from RssItemParcelable
-        getRssItemParcelable();
+        // Set RssViewItem and view elements when ready
+        new ViewItemProcessInBackground(this).execute();
     }
 
     /**
@@ -40,20 +43,19 @@ public class ViewItemActivity extends AppCompatActivity {
     }
 
     /**
-     * Get data from RssItemParcelable from previous intent.
+     * Set view elements based on RssViewItem
      */
-    private void getRssItemParcelable() {
-        try{
-            RssItemParcelable rssItemParcelable = (RssItemParcelable)getIntent().getParcelableExtra(ItemsFeedActivity.PAR_KEY);
-            description.setText(rssItemParcelable.getDescription());
-            pubDate.setText(rssItemParcelable.getPubDate());
-            title.setText(rssItemParcelable.getTitle());
-            Drawable drawable = getDrawableFromUrlString(rssItemParcelable.getImage());
-            image.setImageDrawable(drawable);
-            image.setTag(rssItemParcelable.getLink());
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+    public void setViewElements() {
+
+        String unencodedHtml ="<html><body>" + RssViewItem.descriptionView +"</body></html>";
+        String encodedHtml = Base64.encodeToString(unencodedHtml.getBytes(), Base64.NO_PADDING);
+        description.loadData(encodedHtml, "text/html", "base64");
+
+        image.setImageBitmap(RssViewItem.imageView);
+        image.setTag(RssViewItem.linkImageView);
+
+        pubDate.setText(RssViewItem.pubDateView);
+        title.setText(RssViewItem.titleView);
     }
 
     /**

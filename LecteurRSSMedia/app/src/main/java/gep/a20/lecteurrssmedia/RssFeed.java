@@ -7,9 +7,9 @@ import android.graphics.Bitmap;
  */
 public class RssFeed {
     // Attributes
-    Bitmap image;
-    String title;
-    String description;
+    Bitmap image = Bitmap.createBitmap(2, 2, Bitmap.Config.ARGB_8888);
+    String title = "";
+    String description = "";
 
     // CTOR
     public RssFeed(Bitmap img, String titleP, String descriptionP) {

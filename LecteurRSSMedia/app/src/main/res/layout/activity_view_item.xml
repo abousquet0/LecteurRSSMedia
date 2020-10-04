@@ -1,60 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ViewItemActivity">
-    <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
-        <LinearLayout
+
+    <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout"
+            android:orientation="vertical"
+            android:gravity="start"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+                android:id="@+id/text_title"
+                android:text="@string/vide"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/linearLayout"
-                android:orientation="vertical"
-                android:gravity="start"
-                >
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_margin="15dp"
+                />
 
-            <TextView
-                    android:id="@+id/text_title"
-                    android:text="@string/vide"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:layout_margin="15dp"
-                    />
+        <ImageView
+                android:id="@+id/image_imageUrl"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:contentDescription="@string/imageUrl_contentDescription"
+                android:src="@drawable/ic_baseline_adb"
+                android:onClick="openBrowser"
+                />
 
-            <ImageView
-                    android:id="@+id/image_imageUrl"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:contentDescription="@string/imageUrl_contentDescription"
-                    android:src="@drawable/ic_baseline_adb"
-                    android:onClick="openBrowser"
-                    />
-            <TextView
-                    android:id="@+id/text_pubDate"
-                    android:text="@string/inconnue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10sp"
-                    android:textSize="18sp"
-                    />
-            <TextView
-                    android:id="@+id/text_description"
-                    android:text="@string/vide"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="20sp"
-                    android:textSize="20sp"
-                    android:justificationMode="inter_word"
-                    />
+        <TextView
+                android:id="@+id/text_pubDate"
+                android:text="@string/inconnue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10sp"
+                android:textSize="18sp"
+                />
+    </LinearLayout>
 
-        </LinearLayout>
-
-    </ScrollView>
-
+    <WebView
+            android:id="@+id/text_description"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 </androidx.constraintlayout.widget.ConstraintLayout>
