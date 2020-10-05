@@ -77,8 +77,8 @@ public class Utilities {
                 if(xpp.getName() != null && xpp.getName().equalsIgnoreCase(tag))
                     continueLoop = false;
             }
-        }catch(Exception ex){
-
+        }catch(Exception e){
+            e.printStackTrace();
         }
         return returnValue;
     }

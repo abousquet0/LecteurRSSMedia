@@ -48,6 +48,7 @@ public class ViewItemProcessInBackground extends AsyncTask<Integer, Void, Except
     /**
      * Browse an RSS file to fill the static class RssViewItem
      * with appropriate data to display in RssViewActivity.
+     *
      * @param integers
      * @return exception as parent expect
      */
@@ -57,7 +58,6 @@ public class ViewItemProcessInBackground extends AsyncTask<Integer, Void, Except
             // scope attribute
             XmlPullParser xpp = getXmlPullParser();
             int eventType = xpp.getEventType();
-            int audioCounter = 0;
             boolean isTitleFind = false;
             Drawable image = null;
             String tag = "";
@@ -69,14 +69,17 @@ public class ViewItemProcessInBackground extends AsyncTask<Integer, Void, Except
 
             // Browse RSS to find the good title and related data
             while (eventType != XmlPullParser.END_DOCUMENT) {
-                if (eventType == XmlPullParser.START_TAG && !isTitleFind) { // Find the good title
+                // Find the good title
+                if (eventType == XmlPullParser.START_TAG && !isTitleFind) {
                     tag = xpp.getName();
                     if (tag.equalsIgnoreCase("title")) {
                         lastTitleFind = Html.fromHtml(utility.getNodeValue("title", xpp)).toString();
                         if (lastTitleFind.equalsIgnoreCase(RssViewItem.titleView))
                             isTitleFind = true;
                     }
-                } else if (isTitleFind && eventType == XmlPullParser.START_TAG) { // Get good stuff
+                }
+                // Get good stuff
+                else if (isTitleFind && eventType == XmlPullParser.START_TAG) {
                     tag = xpp.getName();
                     switch (tag) {
                         case "link":
@@ -110,19 +113,16 @@ public class ViewItemProcessInBackground extends AsyncTask<Integer, Void, Except
                             break;
                     }
                 }
-                if (eventType == XmlPullParser.END_TAG && xpp.getName().equalsIgnoreCase("item") && isTitleFind) { // Exit condition
+                // Exit condition
+                if (eventType == XmlPullParser.END_TAG && xpp.getName().equalsIgnoreCase("item") && isTitleFind) {
                     break;
                 } else
                     eventType = xpp.next();
             }
-            // Add extra link to web page
-            RssViewItem.descriptionView += "<a href='" + RssViewItem.linkImageView + "' class='btn btn-info btn-lg'>" +
-                    "<span class='glyphicon glyphicon-globe'></span> Web</a>";
+            // Add an extra link to web page
+            addExtraWebPagelinkInDescription();
             // Add .mp3 link
-            for (String media : mediaLinks) {
-                audioCounter++;
-                RssViewItem.descriptionView += "<a class='btn btn-success btn-lg' href='" + media + "'><span class='glyphicon glyphicon-play'></span>" + " Play audio" + audioCounter + "</a>";
-            }
+            addMp3LinkToTheDescription(mediaLinks);
         } catch (MalformedURLException e) {
             exception = e;
         } catch (XmlPullParserException e) {
@@ -138,6 +138,7 @@ public class ViewItemProcessInBackground extends AsyncTask<Integer, Void, Except
 
     /**
      * Finish to set data into the viewItemActivity
+     *
      * @param e exception expected by parent class
      */
     @Override
@@ -150,6 +151,7 @@ public class ViewItemProcessInBackground extends AsyncTask<Integer, Void, Except
     /**
      * Get a new XmlPullParser to get the data for
      * the given title and the given RSS url.
+     *
      * @return XmlPullParser set with the url get in CTOR
      * @throws MalformedURLException
      * @throws XmlPullParserException
@@ -165,6 +167,7 @@ public class ViewItemProcessInBackground extends AsyncTask<Integer, Void, Except
 
     /**
      * Get article image from RSS itune style
+     *
      * @param xpp
      * @return
      */
@@ -176,6 +179,7 @@ public class ViewItemProcessInBackground extends AsyncTask<Integer, Void, Except
 
     /**
      * Get article image from more or less standard RSS using enclosure tag
+     *
      * @param xpp
      * @return
      */
@@ -191,6 +195,7 @@ public class ViewItemProcessInBackground extends AsyncTask<Integer, Void, Except
 
     /**
      * Get url for .mp3 files to play
+     *
      * @param tag
      * @param xpp
      * @return String url to play a .mp3 file
@@ -211,9 +216,25 @@ public class ViewItemProcessInBackground extends AsyncTask<Integer, Void, Except
                 if (xpp.getName() != null && xpp.getName().equalsIgnoreCase(tag))
                     continueLoop = false;
             }
-        } catch (Exception ex) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return returnValue;
+    }
+
+    /**
+     * Add an extra link to web page in the description displayed in the WebView
+     */
+    private void addExtraWebPagelinkInDescription() {
+        RssViewItem.descriptionView += "<a href='" + RssViewItem.linkImageView + "' class='btn btn-info btn-lg'>" +
+                "<span class='glyphicon glyphicon-globe'></span> Web</a>";
+    }
+
+    private void addMp3LinkToTheDescription(List<String> mediaLinks) {
+        int audioCounter = 0;
+        for (String media : mediaLinks) {
+            audioCounter++;
+            RssViewItem.descriptionView += "<a class='btn btn-success btn-lg' href='" + media + "'><span class='glyphicon glyphicon-play'></span>" + " Play audio" + audioCounter + "</a>";
+        }
     }
 }
