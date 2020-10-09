@@ -1,0 +1,7 @@
+https://github.com/abousquet0/LecteurRSSMedia
+
+Membre de l'équipe :
+  Joëlle Boyer
+  Alexandre Pouliot
+  Mathieu Dionne-Aubé
+  Antoine Bousquet
