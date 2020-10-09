@@ -29,6 +29,7 @@ public class MainProcessInBackground extends AsyncTask<Integer, Void, Exception>
     MainMenuAdapter mainMenuAdapter;
     EditText addUrlEditText;
     Utilities utility = new Utilities();
+
     /**
      * CTOR : Called each time the ListView needs to be updated.
      * @param AddingUrl True if RssFeed object has been added.
@@ -45,7 +46,8 @@ public class MainProcessInBackground extends AsyncTask<Integer, Void, Exception>
         addUrlEditText = addUrlET;
         if (isAddingUrl) {
             sitesToAdd = Arrays.asList(addUrlEditText.getText().toString());
-           sites.add(addUrlEditText.getText().toString());
+            sites.add(addUrlEditText.getText().toString());
+            adapter.updateSites(sites);
         }
     }
 
@@ -55,7 +57,7 @@ public class MainProcessInBackground extends AsyncTask<Integer, Void, Exception>
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        progressDialog.setMessage("Busy loading rss feed...please wait.");
+        progressDialog.setMessage(mainActivity.getApplicationContext().getString(R.string.chargementEnCours));
         progressDialog.show();
     }
 

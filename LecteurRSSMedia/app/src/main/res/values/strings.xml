@@ -6,4 +6,8 @@
     <string name="imageUrl_contentDescription">Voir la nouvelle</string>
     <string name="vide">vide</string>
     <string name="inconnue">inconnue</string>
+    <string name="erreurSauvegarde">Une erreur s\'est produite lors de la sauvegarde des URLs</string>
+    <string name="erreurChargement">Une erreur s\'est produite lors du chargement des URLs</string>
+    <string name="chargementEnCours">Chargement du flux RSS... Veuillez patienter.</string>
+    <string name="erreurSuppression">Erreur dans la suppression du fichier suivant : </string>
 </resources>
